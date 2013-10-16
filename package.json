@@ -1,0 +1,30 @@
+{
+  "name": "column",
+  "version": "0.0.0",
+  "description": "Unix column util in nodejs",
+  "main": "index.js",
+  "dependencies": {
+    "through": "~2.3.4",
+    "split": "~0.2.10"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node test/column.js"
+  },
+  "keywords": [
+    "columns",
+    "column"
+  ],
+  "author": "Drew Stokes",
+  "license": "BSD-2-Clause",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dstokes/column.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dstokes/column/issues"
+  }
+}
