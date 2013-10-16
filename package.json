@@ -1,5 +1,5 @@
 {
-  "name": "column",
+  "name": "node-column",
   "version": "0.0.0",
   "description": "Unix column util in nodejs",
   "main": "index.js",
@@ -21,9 +21,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/dstokes/column.git"
+    "url": "git://github.com/dstokes/node-column.git"
   },
   "bugs": {
-    "url": "https://github.com/dstokes/column/issues"
+    "url": "https://github.com/dstokes/node-column/issues"
   }
 }

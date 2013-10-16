@@ -9,7 +9,7 @@ Unix `column` util ported to a nodejs stream
 Example
 =======
 ``` js
-var column = require('column')
+var column = require('node-column')
   , fs     = require('fs');
   
 fs.createReadStream(somefile)
