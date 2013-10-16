@@ -1,25 +1,29 @@
-var split = require('split')
-  , through = require('through');
+var through = require('through');
 
 module.exports = function(delimiter) {
   var rows = []
-    , widths = [];
+    , widths = []
+    , soFar = '';
 
   if(typeof delimiter === "undefined") delimiter = ' ';
 
   return through(function(data) {
-    rows.push(
-      data.split(delimiter).map(function(col, i) {
-        var len = (col = col.trim()).length, curw = (widths[i] || 0);
-        return (widths[i] = Math.max(len + 1, curw)) && col;
-      })
-    );
+    var pieces = (soFar + data).split(/\r?\n/)
+    soFar = pieces.pop();
+    pieces.map(function(piece, i) {
+      rows.push(
+        piece.split(delimiter).map(function(col, c) {
+          var len = (col = col.trim()).length, curw = (widths[c] || 0);
+          return (widths[c] = Math.max(len , curw)) && col;
+        })
+      );
+    });
   }, function() {
     var str = "                               ";
     var pad = function(s, i) { return (s + str).slice(0, widths[i]); }
-    for(var r = 0, l = rows.length; r < l; r++) {
-      this.queue( rows[r].map(pad).join(" ") + "\n" );
-    }
+    rows.map(function(cols) {
+      this.queue( cols.map(pad).join(" ") + "\n" )
+    }, this);
     this.queue(null);
   });
 }

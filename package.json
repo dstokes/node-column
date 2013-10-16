@@ -4,8 +4,7 @@
   "description": "Unix column util in nodejs",
   "main": "index.js",
   "dependencies": {
-    "through": "~2.3.4",
-    "split": "~0.2.10"
+    "through": "~2.3.4"
   },
   "devDependencies": {},
   "scripts": {
