@@ -11,9 +11,10 @@ Example
 ``` js
 var column = require('node-column')
   , fs     = require('fs');
-  
+
+var separator = " ";
 fs.createReadStream(somefile)
-  .pipe(column())
+  .pipe(column(separator))
   .pipe(process.stdout)
 ```
 

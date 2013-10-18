@@ -4,13 +4,12 @@ function pad(str, len) {
   return (str + Array(len).join(" ")).slice(0, len);
 }
 
-module.exports = function(options) {
-  options = (options || {});
-
+module.exports = function(delimiter) {
   var rows = []
     , soFar = ''
-    , widths = []
-    , delimiter = (options.delimiter || ' ');
+    , widths = [];
+
+  if(typeof delimiter === 'undefined') delimiter = " ";
 
   return through(function(data) {
     var pieces = (soFar + data).split(/\r?\n/)
