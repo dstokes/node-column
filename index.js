@@ -1,29 +1,36 @@
 var through = require('through');
 
-module.exports = function(delimiter) {
-  var rows = []
-    , widths = []
-    , soFar = '';
+function pad(str, len) {
+  return (str + Array(len).join(" ")).slice(0, len);
+}
 
-  if(typeof delimiter === "undefined") delimiter = ' ';
+module.exports = function(options) {
+  options = (options || {});
+
+  var rows = []
+    , soFar = ''
+    , widths = []
+    , delimiter = (options.delimiter || ' ');
 
   return through(function(data) {
     var pieces = (soFar + data).split(/\r?\n/)
+      , columns;
     soFar = pieces.pop();
-    pieces.map(function(piece, i) {
-      rows.push(
-        piece.split(delimiter).map(function(col, c) {
-          var len = (col = col.trim()).length, curw = (widths[c] || 0);
-          return (widths[c] = Math.max(len , curw)) && col;
-        })
-      );
-    });
+
+    for(var i = 0, l = pieces.length; i < l; i++) {
+      rows.push(columns = pieces[i].split(delimiter));
+      for(var c = 0, cl = columns.length; c < cl; c++) {
+        widths[c] = Math.max(columns[c].length , (widths[c] || 0));
+      }
+    }
   }, function() {
-    var str = "                               ";
-    var pad = function(s, i) { return (s + str).slice(0, widths[i]); }
-    rows.map(function(cols) {
-      this.queue( cols.map(pad).join(" ") + "\n" )
-    }, this);
+    for(var i = 0, l = rows.length; i < l; i++) {
+      var columns = rows[i];
+      for(var c = 0, cl = columns.length; c < cl; c++) {
+        columns[c] = pad(columns[c], widths[c]);
+      }
+      this.queue(columns.join(" ") + "\n");
+    }
     this.queue(null);
   });
 }
