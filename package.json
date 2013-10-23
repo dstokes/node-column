@@ -1,6 +1,6 @@
 {
   "name": "node-column",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Unix column util in nodejs",
   "main": "index.js",
   "dependencies": {
