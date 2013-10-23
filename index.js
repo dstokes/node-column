@@ -23,6 +23,7 @@ module.exports = function(delimiter) {
       }
     }
   }, function() {
+    if(soFar != null) rows.push(soFar.split(delimiter));
     for(var i = 0, l = rows.length; i < l; i++) {
       var columns = rows[i];
       for(var c = 0, cl = columns.length; c < cl; c++) {
