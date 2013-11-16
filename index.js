@@ -1,7 +1,7 @@
 var through = require('through');
 
 function pad(str, len) {
-  return (str + Array(len).join(" ")).slice(0, len);
+  return ((str===''?' ':str) + Array(len).join(" ")).slice(0, len);
 }
 
 module.exports = function(delimiter) {
@@ -9,27 +9,31 @@ module.exports = function(delimiter) {
     , soFar = ''
     , widths = [];
 
-  if(typeof delimiter === 'undefined') delimiter = " ";
+  if (typeof delimiter === 'undefined') delimiter = " ";
+
+  function columns(data) {
+    var cols = data.split(delimiter);
+    for (var i = 0, l = cols.length; i < l; i++) {
+      widths[i] = Math.max(cols[i].length, (widths[i] || 0));
+    }
+    return cols;
+  }
 
   return through(function(data) {
-    var pieces = (soFar + data).split(/\r?\n/)
-      , columns;
+    var pieces = (soFar + data).split(/\r?\n/);
     soFar = pieces.pop();
 
-    for(var i = 0, l = pieces.length; i < l; i++) {
-      rows.push(columns = pieces[i].split(delimiter));
-      for(var c = 0, cl = columns.length; c < cl; c++) {
-        widths[c] = Math.max(columns[c].length , (widths[c] || 0));
-      }
+    for (var i = 0, l = pieces.length; i < l; i++) {
+      rows.push( columns(pieces[i]) );
     }
   }, function() {
-    if(soFar != null) rows.push(soFar.split(delimiter));
-    for(var i = 0, l = rows.length; i < l; i++) {
-      var columns = rows[i];
-      for(var c = 0, cl = columns.length; c < cl; c++) {
-        columns[c] = pad(columns[c], widths[c]);
+    if (soFar) rows.push( columns(soFar) );
+    for (var i = 0, l = rows.length; i < l; i++) {
+      var cols = rows[i];
+      for (var c = 0, cl = cols.length; c < cl; c++) {
+        cols[c] = pad(cols[c], widths[c]);
       }
-      this.queue(columns.join(" ") + "\n");
+      this.queue(cols.join(" ") + "\n");
     }
     this.queue(null);
   });

@@ -6,7 +6,9 @@
   "dependencies": {
     "through": "~2.3.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "tape": "~2.1.0"
+  },
   "scripts": {
     "test": "node test/column.js"
   },

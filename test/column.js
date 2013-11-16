@@ -1,17 +1,43 @@
 var fs = require('fs')
-  , column = require('../')
-  , assert = require('assert')
+  , test = require('tape')
+  , columns = require('../')
   , through = require('through');
 
-var output = ''
-  , testStream = column()
-  , result = fs.readFileSync(__dirname + '/result.txt');
+function write(items, cb, delimiter) {
+  var s = columns(delimiter)
+    , res = '';
 
-testStream.pipe(through(
-  function(data) { output += data },
-  function() {
-    assert(String(output) === String(result), 'Expected: "' + result + '", Got: "' + output + '"');
-  }
-));
+  s.pipe(through(function(d) { res += d }, function() { cb(null, res); }));
+  while (items.length) s.write(items.shift());
+  s.end();
+}
 
-fs.createReadStream(__dirname + '/generic.txt').pipe(testStream);
+test('properly formats output', function(t) {
+  write([ "a b c\n", "one two three\n", "d e f\n" ], function(err, res) {
+    var exp = "a   b   c    \n" +
+              "one two three\n" +
+              "d   e   f    \n";
+    t.equal(res, exp, "should format");
+    t.end();
+  });
+});
+
+test('handled dynamic column counts', function(t) {
+  write([ "a b c\n", "one two three\n", "d  t" ], function(err, res) {
+    var exp = "a   b   c    \n" +
+              "one two three\n" +
+              "d       t    \n";
+    t.equal(res, exp, "should format");
+    t.end();
+  });
+});
+
+test('properly splits columns by delimiter', function(t) {
+  write([ "a|b|c\n", "one|two|three\n", "d||t" ], function(err, res) {
+    var exp = "a   b   c    \n" +
+              "one two three\n" +
+              "d       t    \n";
+    t.equal(res, exp, "should format");
+    t.end();
+  }, '|');
+});
